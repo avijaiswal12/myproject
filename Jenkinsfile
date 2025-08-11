@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Final Stage') 
+        stage('Final Stage'){ 
         input {
             message 'Proceed to the final stage?'
             ok 'Yes, continue'
@@ -30,7 +30,7 @@ pipeline {
                 sh 'java --version'
             }
         }
-    }
+    }}
     post {
         always {
             echo 'Pipeline completed.'
