@@ -8,6 +8,9 @@ pipeline {
 
     stages {
         stage('Building Pipeline') {
+            when {
+                expression { params.choice('ENVIRONMENT') == 'Staging' }
+            }
             steps {
                 echo 'Building the pipeline...'
                 // Add your pipeline setup commands here
