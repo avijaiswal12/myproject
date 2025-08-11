@@ -24,6 +24,7 @@ pipeline {
             ok 'Yes, continue'
         }
             steps {
+                echo "Deploying to ${params.ENVIRONMENT} environment"
                 sh 'echo "Building the project..."'
                 // Add your build commands here
                 sh 'java --version'
