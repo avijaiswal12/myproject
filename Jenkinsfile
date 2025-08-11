@@ -3,7 +3,7 @@ pipeline {
     parameters {
         string(name: 'PROJECT_NAME', defaultValue: 'MyProject', description: 'Name of the project')
         choice(name: 'ENVIRONMENT', choices: ['Development', 'Staging', 'Production'], description: 'Select the environment')
-        booleanParam(name: 'ENABLE_FEATURE_X', defaultValue: true, description: 'Enable Feature X')
+        booleanParam(name: 'ENABLE_FEATURE_X', defaultValue: False, description: 'Enable Feature X')
     }
 
     stages {
