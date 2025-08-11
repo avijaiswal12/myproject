@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Building Pipeline') {
             when {
-                expression { params.choice('ENVIRONMENT') == 'Staging' }
+                expression { params.ENVIRONMENT == 'Staging' }
             }
             steps {
                 echo 'Building the pipeline...'
