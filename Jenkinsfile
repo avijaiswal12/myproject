@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Building Pipeline') {
             when {
-                expression { params.ENVIRONMENT == 'Staging' }
+                expression { params.choice('ENVIRONMENT') == 'Staging' }
             }
             steps {
                 echo 'Building the pipeline...'
@@ -18,7 +18,11 @@ pipeline {
             }
         }
 
-        stage('Final Stage') {
+        stage('Final Stage') 
+        input {
+            message 'Proceed to the final stage?'
+            ok 'Yes, continue'
+        }
             steps {
                 sh 'echo "Building the project..."'
                 // Add your build commands here
