@@ -4,13 +4,6 @@ pipeline {
         string(name: 'PROJECT_NAME', defaultValue: 'MyProject', description: 'Name of the project')
         choice(name: 'ENVIRONMENT', choices: ['Development', 'Staging', 'Production'], description: 'Select the environment')
         booleanParam(name: 'ENABLE_FEATURE_X', defaultValue: true, description: 'Enable Feature X')
-        extendedChoice(
-            name: 'DEPLOYMENT_TARGETS',
-            type: 'PT_CHECKBOX',
-            description: 'Select deployment targets',
-            multiSelectDelimiter: ',',
-            value: 'Server1,Server2,Server3'
-        )
     }
 
     stages {
