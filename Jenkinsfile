@@ -7,6 +7,20 @@ pipeline {
     }
 
     stages {
+        stage('Intialize') {
+            steps {
+                echo 'Updating the New POM version...'
+                sh '''
+                    mvn build-helper:parse-version versions:set \
+                      -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion} \
+                      versions:commit
+                git add pom.xml
+                git commit -m "Bump version [ci skip]" || echo "No changes to commit"
+                git push origin HEAD                
+                '''
+            }
+        }
+        
         stage('Building Pipeline') {
             when {
                 expression { params.ENVIRONMENT == 'Staging' }
@@ -14,7 +28,7 @@ pipeline {
             steps {
                 echo 'Building the pipeline...'
                 // Add your pipeline setup commands here
-                sh 'docker --version'
+                sh 'mvn clean package'
             }
         }
 
@@ -22,18 +36,11 @@ pipeline {
             steps {
                 input message: 'Proceed to the final stage?', ok: 'Yes, continue'
                 echo "Deploying to ${params.ENVIRONMENT} environment"
-                echo "Building the project ${params.PROJECT_NAME}"
+                echo "Building the DockerImage ${params.PROJECT_NAME}"
                 // Add your build commands here
-                sh 'java --version'
-                sh '''
-                    mvn build-helper:parse-version versions:set \
-                      -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion} \
-                      versions:commit
-                git add pom.xml
-                git commit -m "Bump version [ci skip]" || echo "No changes to commit"
-                git push origin HEAD
-                '''
-                
+                sh "docker build -t samplewebapp-${params.ENVIRONMENT} ."
+                sh 'sh 'docker run -d --name samplewebapp -p 8082:8080 samplewebapp'
+                            
             }
         }
     }
