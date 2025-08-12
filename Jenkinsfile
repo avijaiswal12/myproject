@@ -43,8 +43,11 @@ pipeline {
                 echo "Deploying to ${params.ENVIRONMENT} environment"
                 echo "Building the DockerImage ${params.PROJECT_NAME}"
                 // Add your build commands here
-                sh "docker build -t samplewebapp-${params.ENVIRONMENT} ."
-                sh 'docker run -d --name samplewebapp -p 8082:8080 samplewebapp'
+                script {
+                    def envLower = params.ENVIRONMENT.toLowerCase()
+                    sh "docker build -t samplewebapp-${envLower} ."
+                    sh "docker run -d --name samplewebapp -p 8082:8080 samplewebapp-${envLower}"
+                }
                             
             }
         }
