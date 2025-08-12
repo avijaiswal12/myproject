@@ -10,14 +10,19 @@ pipeline {
         stage('Intialize') {
             steps {
                 echo 'Updating the New POM version...'
-                sh '''
-                    mvn build-helper:parse-version versions:set \
-                      -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion} \
-                      versions:commit
-                    git add pom.xml
-                    git commit -m "Bump version [ci skip]" || echo "No changes to commit"
-                    git push origin HEAD
-                '''
+                withCredentials([string(credentialsId: '77fca4f9-3889-4968-80d3-0c2f902883dd', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        git config --global user.email "avijaiswal123@example.com"
+                        git config --global user.name "Avinash Jaiswal"
+                        git remote set-url origin https://${GITHUB_TOKEN}@github.com/avijaiswal12/myproject.git
+                        mvn build-helper:parse-version versions:set \
+                          -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion} \
+                          versions:commit
+                        git add pom.xml
+                        git commit -m "Bump version [ci skip]" || echo "No changes to commit"
+                        git push origin HEAD
+                    '''
+                }
             }
         }
         
@@ -32,14 +37,15 @@ pipeline {
             }
         }
 
-        stage('Final Stage') {
+        stage('Building Image') {
             steps {
                 input message: 'Proceed to the final stage?', ok: 'Yes, continue'
                 echo "Deploying to ${params.ENVIRONMENT} environment"
                 echo "Building the DockerImage ${params.PROJECT_NAME}"
                 // Add your build commands here
                 sh "docker build -t samplewebapp-${params.ENVIRONMENT} ."
-                sh "docker run -d --name samplewebapp -p 8082:8080 samplewebapp-${params.ENVIRONMENT}"
+                sh 'docker run -d --name samplewebapp -p 8082:8080 samplewebapp'
+                            
             }
         }
     }
