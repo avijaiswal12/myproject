@@ -14,9 +14,9 @@ pipeline {
                     mvn build-helper:parse-version versions:set \
                       -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion} \
                       versions:commit
-                git add pom.xml
-                git commit -m "Bump version [ci skip]" || echo "No changes to commit"
-                git push origin HEAD                
+                    git add pom.xml
+                    git commit -m "Bump version [ci skip]" || echo "No changes to commit"
+                    git push origin HEAD
                 '''
             }
         }
@@ -39,8 +39,7 @@ pipeline {
                 echo "Building the DockerImage ${params.PROJECT_NAME}"
                 // Add your build commands here
                 sh "docker build -t samplewebapp-${params.ENVIRONMENT} ."
-                sh 'sh 'docker run -d --name samplewebapp -p 8082:8080 samplewebapp'
-                            
+                sh "docker run -d --name samplewebapp -p 8082:8080 samplewebapp-${params.ENVIRONMENT}"
             }
         }
     }
