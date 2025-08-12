@@ -22,7 +22,7 @@ pipeline {
             steps {
                 input message: 'Proceed to the final stage?', ok: 'Yes, continue'
                 echo "Deploying to ${params.ENVIRONMENT} environment"
-                sh 'echo "Building the project..."'
+                sh 'echo "Building the project ${params.PROJECT_NAM}"'
                 // Add your build commands here
                 sh 'java --version'
             }
