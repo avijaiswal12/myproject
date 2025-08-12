@@ -10,11 +10,11 @@ pipeline {
         stage('Intialize') {
             steps {
                 echo 'Updating the New POM version...'
-                withCredentials([string(credentialsId: '77fca4f9-3889-4968-80d3-0c2f902883dd', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: '77fca4f9-3889-4968-80d3-0c2f902883dd', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
                     sh '''
                         git config --global user.email "avijaiswal123@example.com"
                         git config --global user.name "Avinash Jaiswal"
-                        git remote set-url origin https://${GITHUB_TOKEN}@github.com/avijaiswal12/myproject.git
+                        git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/avijaiswal12/myproject.git
                         mvn build-helper:parse-version versions:set \
                           -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion} \
                           versions:commit
