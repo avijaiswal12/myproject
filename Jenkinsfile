@@ -25,6 +25,12 @@ pipeline {
                 echo "Building the project ${params.PROJECT_NAME}"
                 // Add your build commands here
                 sh 'java --version'
+                mvn build-helper:parse-version versions:set \
+                      -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion} \
+                      versions:commit
+                git add pom.xml
+                git commit -m "Bump version [ci skip]" || echo "No changes to commit"
+                git push origin HEAD
             }
         }
     }
